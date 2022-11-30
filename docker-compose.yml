@@ -1,0 +1,41 @@
+version: '3'
+services:
+  fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - ':9000'
+    volumes:
+      - maccms:/var/www/html/
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    links:
+      - fpm
+    volumes:
+      - ./fpm.conf:/etc/nginx/conf.d/default.conf
+      - maccms:/var/www/html/
+
+  db:
+    image: mysql:8.0
+    command:
+      - --default_authentication_plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: maccms
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+
+volumes:
+  db_data:
+  maccms:
