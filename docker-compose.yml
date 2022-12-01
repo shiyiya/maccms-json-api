@@ -9,6 +9,7 @@ services:
     ports:
       - ':9000'
     volumes:
+      - ./addons:/var/www/html/addons
       - maccms:/var/www/html/
 
   nginx:
@@ -22,7 +23,7 @@ services:
       - maccms:/var/www/html/
 
   db:
-    image: mysql:8.0
+    image: mysql:7
     command:
       - --default_authentication_plugin=mysql_native_password
       - --character-set-server=utf8mb4
@@ -35,6 +36,8 @@ services:
       MYSQL_DATABASE: maccms
       MYSQL_USER: user
       MYSQL_PASSWORD: root
+    ports:
+      - 3306:3306
 
 volumes:
   db_data:
